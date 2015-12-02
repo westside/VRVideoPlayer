@@ -1,6 +1,6 @@
 # VR Video Player
 
-Gear VR 360 video player with Meganekko
+Gear VR 360 video player with [Meganekko](https://github.com/ejeinc/Meganekko).
 
 **Please put your [osig](https://developer.oculus.com/osig/) file in app/src/main/assets before execution.**
 
