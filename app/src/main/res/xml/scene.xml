@@ -1,0 +1,14 @@
+<scene>
+    <canvas
+        canvasSize="512 512"
+        height="4.0"
+        id="@+id/canvas"
+        width="4.0"
+        z="-7.0" />
+
+    <video
+        id="@+id/video"
+        mesh="inverted_sphere.obj"
+        renderingOrder="1000"
+        visible="false" />
+</scene>
