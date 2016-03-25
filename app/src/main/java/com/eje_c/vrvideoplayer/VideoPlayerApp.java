@@ -11,8 +11,6 @@ import com.eje_c.meganekko.Meganekko;
 import com.eje_c.meganekko.MeganekkoApp;
 import com.eje_c.meganekko.ObjectLookingStateDetector;
 import com.eje_c.meganekko.SceneObject;
-import com.eje_c.meganekko.scene_objects.CanvasSceneObject;
-import com.eje_c.meganekko.scene_objects.VideoSceneObject;
 
 import java.io.File;
 
@@ -22,8 +20,8 @@ public class VideoPlayerApp extends MeganekkoApp {
     private File file;
     private CanvasRenderer canvasRenderer;
     private MediaPlayer mediaPlayer;
-    private CanvasSceneObject canvas;
-    private VideoSceneObject video;
+    private SceneObject canvas;
+    private SceneObject video;
     private Animator fadeInVideo, fadeOutCanvas;
     private ObjectLookingStateDetector detector;
     private boolean playing;
@@ -38,11 +36,11 @@ public class VideoPlayerApp extends MeganekkoApp {
         setSceneFromXML(R.xml.scene);
 
         // get scene objects
-        canvas = (CanvasSceneObject) getScene().findObjectById(R.id.canvas);
+        canvas = getScene().findObjectById(R.id.canvas);
         canvasRenderer = new CanvasRenderer(getContext());
-        canvas.setOnDrawListener(canvasRenderer);
+        canvas.getRenderData().getMaterial().getTexture().set(canvasRenderer);
 
-        video = (VideoSceneObject) getScene().findObjectById(R.id.video);
+        video = getScene().findObjectById(R.id.video);
 
         // setup animations
         this.fadeInVideo = AnimatorInflater.loadAnimator(getContext(), R.animator.fade_in);
@@ -130,7 +128,7 @@ public class VideoPlayerApp extends MeganekkoApp {
         if (mediaPlayer != null) {
             try {
                 mediaPlayer.start();
-                video.setMediaPlayer(mediaPlayer);
+                video.getRenderData().getMaterial().getTexture().set(mediaPlayer);
 
                 mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                     @Override

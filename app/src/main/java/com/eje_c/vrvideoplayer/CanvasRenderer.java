@@ -12,9 +12,9 @@ import android.support.v4.view.animation.PathInterpolatorCompat;
 import android.view.animation.Interpolator;
 
 import com.eje_c.meganekko.Frame;
-import com.eje_c.meganekko.scene_objects.CanvasSceneObject;
+import com.eje_c.meganekko.Texture;
 
-public class CanvasRenderer implements CanvasSceneObject.OnDrawListener {
+public class CanvasRenderer implements Texture.CanvasRenderer {
 
     private static final float SWEEP_TIME = 3.0f;
     private static final Interpolator interpolator = PathInterpolatorCompat.create(0.4f, 0.0f, 0.2f, 1.0f); // Material design interpolator
@@ -34,13 +34,7 @@ public class CanvasRenderer implements CanvasSceneObject.OnDrawListener {
     }
 
     @Override
-    public boolean isDirty() {
-        return mDirty;
-    }
-
-    @Override
-    public void onDraw(CanvasSceneObject canvasSceneObject, Canvas canvas, Frame vrFrame) {
-
+    public void render(Canvas canvas, Frame frame) {
         canvas.drawColor(0, PorterDuff.Mode.CLEAR);
 
         canvas.drawBitmap(mStartButton, 0, 0, null);
@@ -54,6 +48,21 @@ public class CanvasRenderer implements CanvasSceneObject.OnDrawListener {
         } else {
             mDirty = false;
         }
+    }
+
+    @Override
+    public int getWidth() {
+        return 512;
+    }
+
+    @Override
+    public int getHeight() {
+        return 512;
+    }
+
+    @Override
+    public boolean isDirty() {
+        return mDirty;
     }
 
     /**

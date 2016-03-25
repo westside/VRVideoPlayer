@@ -1,12 +1,11 @@
 <scene>
-    <canvas
-        canvasSize="512 512"
+    <object
         height="4.0"
         id="@+id/canvas"
         width="4.0"
         z="-7.0" />
 
-    <video
+    <object
         id="@+id/video"
         mesh="inverted_sphere.obj"
         renderingOrder="1000"
