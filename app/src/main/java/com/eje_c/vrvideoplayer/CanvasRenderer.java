@@ -11,7 +11,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.animation.PathInterpolatorCompat;
 import android.view.animation.Interpolator;
 
-import com.eje_c.meganekko.VrFrame;
+import com.eje_c.meganekko.Frame;
 import com.eje_c.meganekko.scene_objects.CanvasSceneObject;
 
 public class CanvasRenderer implements CanvasSceneObject.OnDrawListener {
@@ -39,7 +39,7 @@ public class CanvasRenderer implements CanvasSceneObject.OnDrawListener {
     }
 
     @Override
-    public void onDraw(CanvasSceneObject canvasSceneObject, Canvas canvas, VrFrame vrFrame) {
+    public void onDraw(CanvasSceneObject canvasSceneObject, Canvas canvas, Frame vrFrame) {
 
         canvas.drawColor(0, PorterDuff.Mode.CLEAR);
 
@@ -68,11 +68,11 @@ public class CanvasRenderer implements CanvasSceneObject.OnDrawListener {
     /**
      * Call this while user is looking at start button.
      *
-     * @param vrFrame
+     * @param frame
      */
-    public void update(VrFrame vrFrame) {
+    public void update(Frame frame) {
         if (mSweepFraction < 1.0f) {
-            mSweepFraction += vrFrame.getDeltaSeconds() / SWEEP_TIME;
+            mSweepFraction += frame.getDeltaSeconds() / SWEEP_TIME;
         }
     }
 

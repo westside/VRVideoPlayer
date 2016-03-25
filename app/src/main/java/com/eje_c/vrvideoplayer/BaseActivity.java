@@ -3,11 +3,11 @@ package com.eje_c.vrvideoplayer;
 import android.animation.Animator;
 import android.animation.AnimatorInflater;
 
-import com.eje_c.meganekko.MeganekkoActivity;
+import com.eje_c.meganekko.gearvr.MeganekkoActivity;
 
 import ovr.KeyCode;
 
-public class BaseActivity extends MeganekkoActivity {
+public abstract class BaseActivity extends MeganekkoActivity {
 
     // If you intent to prevent unpredictable user control, such as returning to Oculus Home,
     // disabling back button is effective option.
@@ -40,27 +40,5 @@ public class BaseActivity extends MeganekkoActivity {
         }
 
         return super.onKeyLongPress(keyCode, repeatCount);
-    }
-
-    /**
-     * Loading animator utility method.
-     *
-     * @param animatorRes Animator resource ID
-     * @param target      Target object
-     * @param listeners   Optional listeners
-     * @return Animator
-     */
-    public Animator loadAnimator(int animatorRes, Object target, Animator.AnimatorListener... listeners) {
-
-        final Animator animator = AnimatorInflater.loadAnimator(this, animatorRes);
-        animator.setTarget(target);
-
-        if (listeners != null) {
-            for (Animator.AnimatorListener listener : listeners) {
-                animator.addListener(listener);
-            }
-        }
-
-        return animator;
     }
 }
