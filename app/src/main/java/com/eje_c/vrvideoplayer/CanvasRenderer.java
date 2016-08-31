@@ -81,7 +81,7 @@ public class CanvasRenderer implements Texture.CanvasRenderer {
      */
     public void update(Frame frame) {
         if (mSweepFraction < 1.0f) {
-            mSweepFraction += frame.getDeltaSeconds() / SWEEP_TIME;
+            mSweepFraction += 2 * frame.getDeltaSeconds() / SWEEP_TIME;
         }
     }
 

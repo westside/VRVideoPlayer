@@ -5,16 +5,26 @@ import android.animation.AnimatorInflater;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Environment;
+import android.util.Log;
 
 import com.eje_c.meganekko.Frame;
 import com.eje_c.meganekko.Meganekko;
 import com.eje_c.meganekko.MeganekkoApp;
 import com.eje_c.meganekko.ObjectLookingStateDetector;
 import com.eje_c.meganekko.SceneObject;
+import com.eje_c.vrvideoplayer.model.TactosyFeedback;
+import com.eje_c.vrvideoplayer.model.TactosyFile;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
+
 
 public class VideoPlayerApp extends MeganekkoApp {
+    public static final String TAG = VideoPlayerApp.class.getSimpleName();
 
     private final MainActivity activity;
     private File file;
@@ -41,6 +51,8 @@ public class VideoPlayerApp extends MeganekkoApp {
         canvas.getRenderData().getMaterial().getTexture().set(canvasRenderer);
 
         video = getScene().findObjectById(R.id.video);
+
+        PermissionUtils.verifyStoragePermissions(activity);
 
         // setup animations
         this.fadeInVideo = AnimatorInflater.loadAnimator(getContext(), R.animator.fade_in);
@@ -110,6 +122,63 @@ public class VideoPlayerApp extends MeganekkoApp {
         }
     }
 
+    private void jsonFileRead() {
+        try {
+            File jsonFile = new File(Environment.getExternalStorageDirectory(),"/VrVideoPlayer/video1.tactosy");
+            FileInputStream fin;
+            String jsonInfo;
+            byte[] fileContent;
+            if(jsonFile.isFile()) {
+                try {
+                    fin = new FileInputStream(jsonFile);
+                    fileContent = new byte[(int) jsonFile.length()];
+                    fin.read(fileContent);
+                    jsonInfo = new String(fileContent);
+
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    final TactosyFile tactosyFile = objectMapper.readValue(jsonInfo, TactosyFile.class);
+
+                    final Timer timer = new Timer();
+
+                    timer.schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            if(mediaPlayer.isPlaying()){
+                                int time = mediaPlayer.getCurrentPosition();
+                                time = time / 10;
+                                time = time * 10;
+
+                                if (time > tactosyFile.getDurationMillis() + 20) {
+                                    timer.cancel();
+                                }
+
+                                TactosyFeedback[] tactosyFeedbacks = tactosyFile.feedback.get(time);
+
+                                if (tactosyFeedbacks != null) {
+                                        Log.i(TAG, "run: " + time);
+                                    for (TactosyFeedback tactosyFeedback : tactosyFeedbacks) {
+//                                        Log.i(TAG, "run: " + time + ", " + tactosyFeedback);
+                                    }
+                                }
+
+                            }
+                        }
+                    },0, 20);
+
+
+                    Log.i(TAG, "jsonFileRead: " + tactosyFile);
+                } catch (IOException e) {
+                    Log.e(TAG, "onCreate: jsonFile into FileInputStream fail", e);
+                }
+            } else {
+                Log.e(TAG, "jsonFileRead: " + "file not exist");
+            }
+        } catch (Exception exxx) {
+            Log.e(TAG, "jsonFileRead: ", exxx);
+        }
+
+    }
+
     private void startPlaying() {
         playing = true;
         activity.hideGazeCursor();
@@ -120,14 +189,22 @@ public class VideoPlayerApp extends MeganekkoApp {
 
         if (file.exists()) {
             mediaPlayer = MediaPlayer.create(getContext(), Uri.fromFile(file));
+
         } else {
-            mediaPlayer = MediaPlayer.create(getContext(), R.raw.video);
-            activity.getApp().showInfoText(3, getContext().getString(R.string.error_default_video));
+//            mediaPlayer = MediaPlayer.create(getContext(), R.raw.video);
+//            activity.getApp().showInfoText(3, getContext().getString(R.string.error_default_video));
         }
 
         if (mediaPlayer != null) {
+
+            jsonFileRead();
             try {
                 mediaPlayer.start();
+                mediaPlayer.pause();
+
+                mediaPlayer.start();
+
+
                 video.getRenderData().getMaterial().getTexture().set(mediaPlayer);
 
                 mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
@@ -141,10 +218,13 @@ public class VideoPlayerApp extends MeganekkoApp {
                         });
                     }
                 });
+
             } catch (IllegalStateException e) {
                 activity.getApp().showInfoText(1, "error");
                 e.printStackTrace();
             }
+        } else {
+//            activity.getApp().showInfoText(3, "media file null");
         }
 
         if (canvas != null) {
