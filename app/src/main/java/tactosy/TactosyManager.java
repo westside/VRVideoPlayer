@@ -15,6 +15,8 @@ import android.os.RemoteException;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.eje_c.vrvideoplayer.model.PositionType;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -136,29 +138,40 @@ public class TactosyManager {
         }
     }
 
-    public void setMotor(byte[] values) {
-        setMotor(values, false);
+    public void setMotor(PositionType positionType, byte[] values) {
+        setMotor(positionType, values, false);
     }
 
-    public void setMotor(byte[] values, boolean force) {
-        setMotor(values, force, TactosyConstants.MOTOR_CHAR);
+    public void setMotor(PositionType positionType, byte[] values, boolean force) {
+        setMotor(positionType, values, force, TactosyConstants.MOTOR_CHAR);
     }
 
-    public void setMotorPathMode(byte[] bytes) {
-        setMotor(bytes, false, TactosyConstants.MOTOR_CHAR_MAPP);
+    public void setMotorPathMode(PositionType positionType, byte[] bytes) {
+        setMotor(positionType, bytes, false, TactosyConstants.MOTOR_CHAR_MAPP);
     }
 
-    private void setMotor(byte[] values, boolean force, UUID charUUID) {
+    private void setMotor(PositionType positionType, byte[] values, boolean force, UUID charUUID) {
 
         for (String addr : connectedDevices) {
             Message msg = new Message();
             Bundle data = new Bundle();
+
+            if (positionType == PositionType.Left) {
+                if (!addr.startsWith("CD")) {
+                    continue;
+                }
+            } else {
+                if (!addr.startsWith("DD")) {
+                    continue;
+                }
+            }
 
             Log.i(TAG, "setMotor: ");
             data.putString(TactosyConstants.KEY_SERVICE_ID, TactosyConstants.MOTOR_SERVICE.toString());
             data.putString(TactosyConstants.KEY_CHAR_ID, charUUID.toString());
             data.putByteArray(TactosyConstants.KEY_VALUES, values);
             data.putString(TactosyConstants.KEY_ADDR, addr);
+            data.putString("POSITION", positionType.toString());
 
             msg.arg1 = force ? 1 : 0;
             msg.what = TactosyConstants.MESSAGE_WRITE;

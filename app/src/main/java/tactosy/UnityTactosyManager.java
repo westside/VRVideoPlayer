@@ -3,6 +3,8 @@ package tactosy;
 import android.content.Context;
 import android.util.Log;
 
+import com.eje_c.vrvideoplayer.model.PositionType;
+
 /**
  * Created by westside on 2016-07-29.
  */
@@ -26,16 +28,16 @@ public class UnityTactosyManager {
         Log.i(TAG, "init: ");
     }
 
-    public boolean setMotor(byte[] bytes) {
+    public boolean setMotor(PositionType positionType,  byte[] bytes) {
         Log.i(TAG, "setMotor()");
-        tactosyManager.setMotor(bytes);
+        tactosyManager.setMotor(positionType, bytes);
 
         return true;
     }
 
-    public boolean setMotorPathMode(byte[] bytes) {
+    public boolean setMotorPathMode(PositionType positionType, byte[] bytes) {
         Log.i(TAG, "setMotorPathMode()");
-        tactosyManager.setMotorPathMode(bytes);
+        tactosyManager.setMotorPathMode(positionType, bytes);
         return true;
     }
 

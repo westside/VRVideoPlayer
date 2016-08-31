@@ -12,6 +12,8 @@ import com.eje_c.meganekko.Meganekko;
 import com.eje_c.meganekko.MeganekkoApp;
 import com.eje_c.meganekko.ObjectLookingStateDetector;
 import com.eje_c.meganekko.SceneObject;
+import com.eje_c.vrvideoplayer.model.FeedbackMode;
+import com.eje_c.vrvideoplayer.model.PositionType;
 import com.eje_c.vrvideoplayer.model.TactosyFeedback;
 import com.eje_c.vrvideoplayer.model.TactosyFile;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,6 +23,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import tactosy.UnityTactosyManager;
 
 
 public class VideoPlayerApp extends MeganekkoApp {
@@ -34,6 +38,8 @@ public class VideoPlayerApp extends MeganekkoApp {
     private SceneObject video;
     private Animator fadeInVideo, fadeOutCanvas;
     private ObjectLookingStateDetector detector;
+
+    UnityTactosyManager unityTactosyManager;
     private boolean playing;
 
     protected VideoPlayerApp(Meganekko meganekko, MainActivity activity) {
@@ -53,6 +59,8 @@ public class VideoPlayerApp extends MeganekkoApp {
         video = getScene().findObjectById(R.id.video);
 
         PermissionUtils.verifyStoragePermissions(activity);
+
+        unityTactosyManager = UnityTactosyManager.instance(activity.getApplicationContext());
 
         // setup animations
         this.fadeInVideo = AnimatorInflater.loadAnimator(getContext(), R.animator.fade_in);
@@ -107,6 +115,8 @@ public class VideoPlayerApp extends MeganekkoApp {
 
     @Override
     public void shutdown() {
+        unityTactosyManager.destroy();
+
         release();
         super.shutdown();
     }
@@ -124,7 +134,7 @@ public class VideoPlayerApp extends MeganekkoApp {
 
     private void jsonFileRead() {
         try {
-            File jsonFile = new File(Environment.getExternalStorageDirectory(),"/VrVideoPlayer/video1.tactosy");
+            File jsonFile = new File(Environment.getExternalStorageDirectory(),"/VrVideoPlayer/video2.tactosy");
             FileInputStream fin;
             String jsonInfo;
             byte[] fileContent;
@@ -139,26 +149,33 @@ public class VideoPlayerApp extends MeganekkoApp {
                     final TactosyFile tactosyFile = objectMapper.readValue(jsonInfo, TactosyFile.class);
 
                     final Timer timer = new Timer();
-
                     timer.schedule(new TimerTask() {
                         @Override
                         public void run() {
                             if(mediaPlayer.isPlaying()){
                                 int time = mediaPlayer.getCurrentPosition();
-                                time = time / 10;
-                                time = time * 10;
+                                Log.i(TAG, "run: " + time);
+                                time = time / 20;
+                                time = time * 20;
 
-                                if (time > tactosyFile.getDurationMillis() + 20) {
+                                if (time > tactosyFile.getDurationMillis()) {
                                     timer.cancel();
                                 }
 
                                 TactosyFeedback[] tactosyFeedbacks = tactosyFile.feedback.get(time);
 
                                 if (tactosyFeedbacks != null) {
-                                        Log.i(TAG, "run: " + time);
+                                        Log.i(TAG, "test run: data" + time);
                                     for (TactosyFeedback tactosyFeedback : tactosyFeedbacks) {
-//                                        Log.i(TAG, "run: " + time + ", " + tactosyFeedback);
+                                        if (tactosyFeedback.getMode() == FeedbackMode.DOT_MODE) {
+                                            unityTactosyManager.setMotor(tactosyFeedback.getPosition(), tactosyFeedback.getValues());
+                                        } else {
+                                            unityTactosyManager.setMotorPathMode(tactosyFeedback.getPosition(), tactosyFeedback.getValues());
+                                        }
                                     }
+                                } else {
+                                    unityTactosyManager.setMotor(PositionType.Left, new byte[20]);
+                                    unityTactosyManager.setMotor(PositionType.Right, new byte[20]);
                                 }
 
                             }
