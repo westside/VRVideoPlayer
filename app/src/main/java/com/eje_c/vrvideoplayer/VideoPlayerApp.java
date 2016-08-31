@@ -58,7 +58,7 @@ public class VideoPlayerApp extends MeganekkoApp {
 
         video = getScene().findObjectById(R.id.video);
 
-        PermissionUtils.verifyStoragePermissions(activity);
+        com.bhaptics.common.PermissionUtils.verifyStoragePermissions(activity);
 
         unityTactosyManager = UnityTactosyManager.instance(activity.getApplicationContext());
 

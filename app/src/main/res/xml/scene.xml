@@ -1,8 +1,8 @@
 <scene>
     <object
-        height="4.0"
+        height="6.0"
         id="@+id/canvas"
-        width="4.0"
+        width="6.0"
         z="-7.0" />
 
     <object

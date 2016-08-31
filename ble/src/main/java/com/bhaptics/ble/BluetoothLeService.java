@@ -188,8 +188,6 @@ public class BluetoothLeService extends Service implements BluetoothAdapter.LeSc
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i(TAG, "onCreate: lock");
-        PowerUtils.lock(getApplicationContext());
-
         Log.i(TAG, "onStartCommand: " + intent + ", " + flags + "," + startId);
 
         if (mBluetoothManager == null) {
