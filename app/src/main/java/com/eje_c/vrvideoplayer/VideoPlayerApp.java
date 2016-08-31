@@ -74,21 +74,23 @@ public class VideoPlayerApp extends MeganekkoApp {
 
             @Override
             public void onLookStart(SceneObject sceneObject, Frame frame) {
+                Log.i(TAG, "onLookStart: ");
                 canvasRenderer.setLooking(true);
             }
 
             @Override
             public void onLooking(SceneObject sceneObject, Frame frame) {
+                Log.i(TAG, "onLooking: ");
                 canvasRenderer.update(frame);
 
-                if (!notified && canvasRenderer.getSweepFraction() >= 1.0f) {
-                    notified = true;
+                if (!playing && canvasRenderer.getSweepFraction() >= 1.0f) {
                     startPlaying();
                 }
             }
 
             @Override
             public void onLookEnd(SceneObject sceneObject, Frame frame) {
+                Log.i(TAG, "onLookEnd: ");
                 canvasRenderer.setLooking(false);
             }
         });
@@ -134,7 +136,7 @@ public class VideoPlayerApp extends MeganekkoApp {
 
     private void jsonFileRead() {
         try {
-            File jsonFile = new File(Environment.getExternalStorageDirectory(),"/VrVideoPlayer/video2.tactosy");
+            File jsonFile = new File(Environment.getExternalStorageDirectory(), getContext().getString(R.string.tactosy_path_from_sdcard));
             FileInputStream fin;
             String jsonInfo;
             byte[] fileContent;
@@ -204,16 +206,12 @@ public class VideoPlayerApp extends MeganekkoApp {
             release();
         }
 
-        if (file.exists()) {
+//        if (file.exists()) {
             mediaPlayer = MediaPlayer.create(getContext(), Uri.fromFile(file));
-
-        } else {
-//            mediaPlayer = MediaPlayer.create(getContext(), R.raw.video);
-//            activity.getApp().showInfoText(3, getContext().getString(R.string.error_default_video));
-        }
+//        }
 
         if (mediaPlayer != null) {
-
+            Log.i(TAG, "startPlaying: " + "start");
             jsonFileRead();
             try {
                 mediaPlayer.start();
@@ -240,8 +238,6 @@ public class VideoPlayerApp extends MeganekkoApp {
                 activity.getApp().showInfoText(1, "error");
                 e.printStackTrace();
             }
-        } else {
-//            activity.getApp().showInfoText(3, "media file null");
         }
 
         if (canvas != null) {
