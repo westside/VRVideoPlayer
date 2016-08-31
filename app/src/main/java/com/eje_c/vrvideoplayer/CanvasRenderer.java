@@ -25,8 +25,8 @@ public class CanvasRenderer implements Texture.CanvasRenderer {
     private float mSweepFraction;
     private boolean mDirty = false;
 
-    public CanvasRenderer(Context context) {
-        mStartButton = BitmapFactory.decodeResource(context.getResources(), R.drawable.start_button);
+    public CanvasRenderer(Context context, int idx) {
+        mStartButton = BitmapFactory.decodeResource(context.getResources(), idx == 1 ? R.drawable.button1 : R.drawable.button2);
 
         mSweepPaint.setColor(ContextCompat.getColor(context, R.color.lineColor));
         mSweepPaint.setStyle(Paint.Style.STROKE);
@@ -81,7 +81,7 @@ public class CanvasRenderer implements Texture.CanvasRenderer {
      */
     public void update(Frame frame) {
         if (mSweepFraction < 1.0f) {
-            mSweepFraction += 2 * frame.getDeltaSeconds() / SWEEP_TIME;
+            mSweepFraction += frame.getDeltaSeconds() / SWEEP_TIME;
         }
     }
 

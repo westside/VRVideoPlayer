@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">VR Video player</string>
-    <string name="video_path_from_sdcard">VrVideoPlayer/video1.mp4</string>
-    <string name="tactosy_path_from_sdcard">VrVideoPlayer/video1.tactosy</string>
+    <string name="video_path_from_sdcard">VrVideoPlayer/G1.mp4</string>
+    <string name="video_path_from_sdcard2">VrVideoPlayer/G2.mp4</string>
+    <string name="tactosy_path_from_sdcard">VrVideoPlayer/G1.tactosy</string>
+    <string name="tactosy_path_from_sdcard2">VrVideoPlayer/G2.tactosy</string>
     <string name="error_default_video">Video file is not found on\n/sdcard/VrVideoPlayer/video.mp4.\nSo default sample video is playing.</string>
 </resources>

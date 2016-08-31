@@ -1,10 +1,17 @@
 <scene>
     <object
-        height="6.0"
+        x = "-3"
+        height="4.0"
         id="@+id/canvas"
-        width="6.0"
+        width="4.0"
         z="-7.0" />
-
+     <object
+        x = "2.0"
+        height="4.0"
+        id="@+id/canvas2"
+        width="4.0"
+        z="-6.0" />
+.
     <object
         id="@+id/video"
         mesh="inverted_sphere.obj"
